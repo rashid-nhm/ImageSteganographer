@@ -40,7 +40,7 @@ python iStego.py encode --image="path/to/image.png" --output="where/to/save/new/
 ##### Getting a message out of an image (*Decoding*)
 The following sample command extracts a message from an image:
 ```
-python iStego.py decode --image="path/to/image.png" --output="text/file/to/save/output.txt" *--verbose*
+python iStego.py decode --image="path/to/image.png" --output="text/file/to/save/output.txt" --verbose
 ```
 **Tip:** You can use the `--verbose` parameter at the end to debug the progress of any encode or decode process
 
