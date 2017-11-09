@@ -13,10 +13,10 @@ The *[Pillow](https://wp.stolaf.edu/it/installing-pil-pillow-cimage-on-windows-a
 pip install Pillow
 ``` 
 
-## **Development Environment**
+### **Development Environment**
 The script was developed using Python3.6
 
-## **Features**
+### **Features**
 - Is able to hide text messages inside images
 - Is able to extract hidden messages from images
 - Basic error checking to see if images are valid
