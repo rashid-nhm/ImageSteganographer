@@ -20,6 +20,7 @@ The script was developed using Python3.6
 - Is able to hide text messages inside images
 - Is able to extract hidden messages from images
 - Basic error checking to see if images are valid
+
 The *decode* function assumes the message was hidden using this script as well, and will not work otherwise.
 Basically the encode is proprietary for the decode to work
 
