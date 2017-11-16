@@ -31,9 +31,8 @@ Parameters:
 Return:
 	x <str> : String of binary representing the original string, separated by space
 '''
-def str2bin(n, join_by=" "):
-	msg = join_by.join([i[2:] for i in list(map(bin, bytearray(n, "ascii")))])
-	return msg
+def str2bin(n):
+	return "".join([bin(ord(n[i]))[2:].zfill(7) for i in range(len(n))])
 
 	
 '''

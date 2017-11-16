@@ -20,18 +20,15 @@ def encode(fileLoc, msg, output):
 	width, height = imge.size
 	verbosity("Image dimesions: {}x{}".format(width, height))
 	
-	msg = msg.split()
-	if len(msg) > 1:
-		verbosity("Seems you have spaces in your message. All spaces will be erased...")
-	msg = "".join(msg)
-	msg_bin = str2bin(msg, "")
-	
-	if len(msg_bin) > (width * height):
+	hashtag_bin = "0100011"
+	msg_bin = str2bin(msg) 
+	if len(msg_bin + hashtag_bin) > (width * height):
 		raise MessageTooLong("ERROR! Message too long to encode into image")
 	verbosity("This is the message in binary: ")
 	verbosity("print('" + msg_bin + "')")
 	
 	verbosity("Starting to encode message into image...")
+	msg_bin = msg_bin + hashtag_bin
 	count = 0
 	null_byte = 8
 	for i in range(height):
@@ -98,10 +95,13 @@ def decode(fileLoc, output=""):
 		progress_bar(MAX_PROGRESS_BAR_LENGTH,MAX_PROGRESS_BAR_LENGTH,MAX_PROGRESS_BAR_LENGTH)
 		print()
 	
-	verbosity("The retrieved message in binary: %s" %msg_bin)
+	verbosity("All trailing zeros will be stripped, this may mess up the last character")
+	msg_bin = msg_bin.rstrip("0")
+	verbosity("The retrieved message in binary:\n%s" %msg_bin)
 	verbosity("Converting to string..")
 	msg = bin2str(msg_bin)
-
+	msg = msg[:-1]
+	
 	if output != None:
 		verbosity("Writing message to file")
 		with open(output, 'w') as otp:
