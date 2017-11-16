@@ -60,7 +60,7 @@ def encode(fileLoc, msg, output):
 	verbosity("Saving image")
 	imge.save(output)
 	verbosity("Encoding COMPLETE! Image saved at %s" %output)
-def decode(fileLoc, output=""):
+def decode(fileLoc, output=None):
 	if not os.path.isfile(fileLoc):
 		raise InvalidFlag("ERROR! Input image does not exist!")
 	verbosity("Opening and reading image")
