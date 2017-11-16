@@ -51,6 +51,6 @@ Due to the way certain image types are handled, the steganography seems to work 
 There will probably be lots of bugs with a program like this, feel free to make an *issue request* if you do find a bug and I will try to see if it is fixable or not
 
 
-This document was last updated: November 9, 2017
+This document was last updated: November 15, 2017
 
 -R.N.
