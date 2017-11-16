@@ -47,20 +47,6 @@ Returns:
 def bin2str(n):
 	return "".join([chr(int(n[i:i+7], 2)) for i in range(0, len(n), 7)])
 
-	
-
-'''
-Function: complement
-Description: Takes a integer as input, outputs the complement of the number
-		ex: 5 => 101 (binary) => 010 (complement, flip all 1s and 0s) => 2
-Parameters:
-	n <int> : Integer as input
-Return:
-	x <int> : Complement of input as integer
-'''
-def complement(n):
-	return n^1
-
 '''
 Function: progress_bar
 Description: Prints a progress bar for visual indication of progress
