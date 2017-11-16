@@ -5,7 +5,7 @@ verbose = False
 MAX_PROGRESS_BAR_LENGTH = 50
 
 class InvalidFlag(Exception):
-	'''Raised when user tries to encode and decode at the same time'''
+	'''Raised when user enters flag parameters that are not valid'''
 	pass
 class MessageTooLong(Exception):
 	'''Raised if message can't fit in image'''
@@ -16,40 +16,45 @@ def encode(fileLoc, msg, output):
 		raise InvalidFlag("ERROR! Input image does not exist!")
 	verbosity("Opening and reading image")
 	imge = Image.open(fileLoc)
-	imge = imge.convert('RGB')
 	width, height = imge.size
 	verbosity("Image dimesions: {}x{}".format(width, height))
 	
-	hashtag_bin = "0100011"
+	terminate_bin = "0100011"
 	msg_bin = str2bin(msg) 
-	if len(msg_bin + hashtag_bin) > (width * height):
+	if len(msg_bin + terminate_bin) > (width * height):
 		raise MessageTooLong("ERROR! Message too long to encode into image")
 	verbosity("This is the message in binary: ")
 	verbosity("print('" + msg_bin + "')")
 	
 	verbosity("Starting to encode message into image...")
-	msg_bin = msg_bin + hashtag_bin
+	msg_bin = msg_bin + terminate_bin
 	count = 0
 	null_byte = 8
+	is_tpl = True
 	for i in range(height):
 		for j in range(width):
 			rgba = imge.getpixel((j, i))
-			r = rgba[0]
-			g = rgba[1]
-			b = rgba[2]
+			if type(rgba) is tuple:
+				is_tpl = True
+				b = rgba[2]
+			elif type(rgba) is int:
+				is_tpl = False
+				b = rgba
 			b_bin = str(int2bin(b))
 			if count < len(msg_bin):
 				b_bin = b_bin[:len(b_bin) - 1] + str(msg_bin[count])
-				b = bin2int(b_bin)
-				imge.putpixel((j, i), (r, g, b))
 				count += 1
 			else:
-				if null_byte > 0:
-					b_bin = b_bin[:len(b_bin) - 1] + "0"
-					b = bin2int(b_bin)
-					imge.putpixel((j, i), (r, g, b))
-				else:
-					break
+				b_bin[:len(b_bin) - 1] + "0"
+				null_byte -= 1
+			b = bin2int(b_bin)
+			
+			if is_tpl:
+				rgba = rgba[:2] + (b,) + rgba[3:]
+			else:
+				rgba = b
+			imge.putpixel((j, i), rgba)
+			if null_byte < 1: break
 		if null_byte < 1:
 			break
 		if verbose:
@@ -76,15 +81,16 @@ def decode(fileLoc, output=None):
 	for i in range(height):
 		for j in range(width):
 			rgba = imge.getpixel((j, i))
-			r = rgba[0]
-			g = rgba[1]
-			b = rgba[2]
+			if type(rgba) is tuple:
+				b = rgba[2]
+			elif type(rgba) is int:
+				b = rgba
 			lsb = str(int2bin(b))[-1]
 			msg_bin += lsb
 			if lsb == "0":
 				b_null_count += 1
 			else:
-				b_null_count = 0
+				b_null_count = 0 
 			if b_null_count == 8:
 				break_decode = True
 				break
