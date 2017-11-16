@@ -33,6 +33,7 @@ def encode(fileLoc, msg, output):
 	
 	verbosity("Starting to encode message into image...")
 	count = 0
+	null_byte = 8
 	for i in range(height):
 		for j in range(width):
 			rgba = imge.getpixel((j, i))
@@ -46,9 +47,14 @@ def encode(fileLoc, msg, output):
 				imge.putpixel((j, i), (r, g, b))
 				count += 1
 			else:
-				b_bin = b_bin[:len(b_bin) - 1] + "0"
-				b = bin2int(b_bin)
-				imge.putpixel((j, i), (r, g, b))
+				if null_byte > 0:
+					b_bin = b_bin[:len(b_bin) - 1] + "0"
+					b = bin2int(b_bin)
+					imge.putpixel((j, i), (r, g, b))
+				else:
+					break
+		if null_byte < 1:
+			break
 		if verbose:
 			progress_bar(cur=i, ttl=height, max_len=MAX_PROGRESS_BAR_LENGTH)
 	if verbose:
