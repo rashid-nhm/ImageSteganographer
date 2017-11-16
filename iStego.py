@@ -4,6 +4,26 @@ import argparse, sys, os
 verbose = False
 MAX_PROGRESS_BAR_LENGTH = 50
 
+banner_encode = """
+  _    _ _____ _____  ______     _____ _______ 
+ | |  | |_   _|  __ \|  ____|   |_   _|__   __|
+ | |__| | | | | |  | | |__        | |    | |   
+ |  __  | | | | |  | |  __|       | |    | |   
+ | |  | |_| |_| |__| | |____     _| |_   | |   
+ |_|  |_|_____|_____/|______|   |_____|  |_|
+
+"""
+
+banner_decode = """
+   _____ _    _  ______          __    _____ _______ 
+  / ____| |  | |/ __ \ \        / /   |_   _|__   __|
+ | (___ | |__| | |  | \ \  /\  / /      | |    | |   
+  \___ \|  __  | |  | |\ \/  \/ /       | |    | |   
+  ____) | |  | | |__| | \  /\  /       _| |_   | |   
+ |_____/|_|  |_|\____/   \/  \/       |_____|  |_|   
+ 
+"""
+
 class InvalidFlag(Exception):
 	'''Raised when user enters flag parameters that are not valid'''
 	pass
@@ -12,6 +32,7 @@ class MessageTooLong(Exception):
 	pass
 
 def encode(fileLoc, msg, output):
+	verbosity(banner_encode, "\n\n")
 	if not os.path.isfile(fileLoc):
 		raise InvalidFlag("ERROR! Input image does not exist!")
 	verbosity("Opening and reading image")
@@ -27,9 +48,9 @@ def encode(fileLoc, msg, output):
 	verbosity("print('" + msg_bin + "')")
 	
 	verbosity("Starting to encode message into image...")
-	msg_bin = msg_bin + terminate_bin
 	count = 0
-	null_byte = 8
+	null_byte = 16
+	msg_bin = msg_bin + terminate_bin + ("0" * null_byte)
 	is_tpl = True
 	for i in range(height):
 		for j in range(width):
@@ -45,8 +66,8 @@ def encode(fileLoc, msg, output):
 				b_bin = b_bin[:len(b_bin) - 1] + str(msg_bin[count])
 				count += 1
 			else:
-				b_bin[:len(b_bin) - 1] + "0"
-				null_byte -= 1
+				null_byte = -1
+				break
 			b = bin2int(b_bin)
 			
 			if is_tpl:
@@ -54,7 +75,6 @@ def encode(fileLoc, msg, output):
 			else:
 				rgba = b
 			imge.putpixel((j, i), rgba)
-			if null_byte < 1: break
 		if null_byte < 1:
 			break
 		if verbose:
@@ -66,6 +86,7 @@ def encode(fileLoc, msg, output):
 	imge.save(output)
 	verbosity("Encoding COMPLETE! Image saved at %s" %output)
 def decode(fileLoc, output=None):
+	verbosity(banner_decode, "\n\n")
 	if not os.path.isfile(fileLoc):
 		raise InvalidFlag("ERROR! Input image does not exist!")
 	verbosity("Opening and reading image")
@@ -106,6 +127,7 @@ def decode(fileLoc, output=None):
 	verbosity("The retrieved message in binary:\n%s" %msg_bin)
 	verbosity("Converting to string..")
 	msg = bin2str(msg_bin)
+	print(msg)
 	msg = msg[:-1]
 	
 	if output != None:
@@ -124,7 +146,7 @@ def verbosity(*args):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(
 		prog="Image Steganographer",
-		description="Simple Image Steganographer in Python3"
+		description="A simple Python Image Steganographer"
 	)
 	
 	#Adds all positional arguments
