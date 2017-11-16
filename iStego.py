@@ -127,7 +127,6 @@ def decode(fileLoc, output=None):
 	verbosity("The retrieved message in binary:\n%s" %msg_bin)
 	verbosity("Converting to string..")
 	msg = bin2str(msg_bin)
-	print(msg)
 	msg = msg[:-1]
 	
 	if output != None:
